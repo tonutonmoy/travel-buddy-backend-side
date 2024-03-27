@@ -17,7 +17,7 @@ const RegistrationDB = async (payload: any) => {
     const userResult = await prisma.user.create({ data: user });
 
     if (!userResult) {
-      throw Error("something went wrong");
+      throw new Error("something went wrong");
     }
 
     profile.userId = userResult.id;
@@ -35,43 +35,35 @@ const RegistrationDB = async (payload: any) => {
 };
 
 // login
-const loginUserDB = async (payload: { email: string; password: string }) => {
+const loginUserDB = async (payload: any) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
     },
   });
-
+  if (!userData) {
+    throw new Error(" Unauthorized Access!");
+  }
   const isCorrectPassword: boolean = await bcrypt.compare(
     payload.password,
     userData.password
   );
-
   if (!isCorrectPassword) {
     throw new Error("Password incorrect!");
   }
   const accessToken = jwtHelpers.generateToken(
     {
       email: userData.email,
-      role: userData.role,
     },
     config.jwt.jwt_secret as string,
     config.jwt.expires_in as string
   );
-
-  const refreshToken = jwtHelpers.generateToken(
-    {
-      email: userData.email,
-      role: userData.role,
-    },
-    config.jwt.refresh_token_secret as Secret,
-    config.jwt.refresh_token_expires_in as string
-  );
-
+  const { id, name, email } = userData;
   return {
-    accessToken,
-    refreshToken,
-    needPasswordChange: userData.needPasswordChange,
+    id,
+    name,
+    email,
+    token: accessToken,
   };
 };
 
