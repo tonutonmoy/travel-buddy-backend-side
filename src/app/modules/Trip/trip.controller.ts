@@ -5,6 +5,8 @@ import sendResponse from "../../../shared/sendResponse";
 import { TripServices } from "./trip.service";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import config from "../../../config";
+import pick from "../../../shared/pick";
+import { userFilterableFields } from "./trip.constant";
 
 const CreateTrip = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
@@ -29,7 +31,10 @@ const CreateTrip = catchAsync(async (req: Request, res: Response) => {
 });
 
 const GetTrips = catchAsync(async (req: Request, res: Response) => {
-  const result = await TripServices.GetTripsDB(req.body);
+  const { searchTerm } = req?.query;
+  const filters = pick(req?.query, userFilterableFields);
+  const options = pick(req?.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await TripServices.GetTripsDB(searchTerm, filters, options);
 
   sendResponse(res, {
     statusCode: 200,
