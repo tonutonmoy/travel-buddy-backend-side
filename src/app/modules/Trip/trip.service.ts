@@ -1,7 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
-import { userSearchAbleFields } from "./trip.constant";
 
 // Create Trip
 const CreateTripeDB = async (email: string, payload: any) => {
