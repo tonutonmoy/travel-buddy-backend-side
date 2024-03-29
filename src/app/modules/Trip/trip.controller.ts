@@ -7,6 +7,7 @@ import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import config from "../../../config";
 import pick from "../../../shared/pick";
 import { userFilterableFields } from "./trip.constant";
+import prisma from "../../../shared/prisma";
 
 const CreateTrip = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
@@ -19,6 +20,14 @@ const CreateTrip = catchAsync(async (req: Request, res: Response) => {
     token,
     config.jwt.jwt_secret as string
   );
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
 
   const result = await TripServices.CreateTripeDB(email, req.body);
 

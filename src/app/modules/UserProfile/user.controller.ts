@@ -6,6 +6,7 @@ import sendResponse from "../../../shared/sendResponse";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import config from "../../../config";
 import { UserProfileServices } from "./user.service";
+import prisma from "../../../shared/prisma";
 
 const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
@@ -19,6 +20,13 @@ const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
     config.jwt.jwt_secret as string
   );
 
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
   const result = await UserProfileServices.GetUserProfileDB(email);
 
   sendResponse(res, {
@@ -40,6 +48,13 @@ const UpdateUserProfile = catchAsync(async (req: Request, res: Response) => {
     token,
     config.jwt.jwt_secret as string
   );
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
 
   const result = await UserProfileServices.UpdateUserProfileDB(email, req.body);
 
