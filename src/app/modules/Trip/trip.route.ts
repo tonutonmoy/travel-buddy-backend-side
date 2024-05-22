@@ -13,5 +13,6 @@ router.post(
   TripController.CreateTrip
 );
 router.get("/trips", TripController.GetTrips);
+router.get("/trips/:id", TripController.GetSingleTrips);
 
 export const TripsRoutes = router;

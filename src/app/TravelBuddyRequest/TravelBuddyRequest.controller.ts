@@ -13,6 +13,8 @@ const CreateTravelBuddyRequest = catchAsync(
     const tripId = req?.params?.tripId;
     const body = req?.body;
 
+    console.log(body, tripId);
+
     if (!token) {
       throw new Error("Unauthorized Access");
     }

@@ -44,6 +44,18 @@ const GetTrips = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req?.query, userFilterableFields);
   const options = pick(req?.query, ["limit", "page", "sortBy", "sortOrder"]);
   const result = await TripServices.GetTripsDB(searchTerm, filters, options);
+  console.log(req?.query);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Trips retrieved successfully",
+    data: result,
+  });
+});
+
+const GetSingleTrips = catchAsync(async (req: Request, res: Response) => {
+  const result = await TripServices.getSingleTripeDB(req?.params?.id);
 
   sendResponse(res, {
     statusCode: 200,
@@ -56,4 +68,5 @@ const GetTrips = catchAsync(async (req: Request, res: Response) => {
 export const TripController = {
   CreateTrip,
   GetTrips,
+  GetSingleTrips,
 };

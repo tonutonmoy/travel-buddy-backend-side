@@ -6,4 +6,5 @@ export const userFilterableFields: string[] = [
   "endDate",
   "minBudget",
   "maxBudget",
+  "travelType",
 ];

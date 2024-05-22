@@ -21,20 +21,33 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
   const { ...filterData } = params;
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
 
+  console.log(page);
   let whereConditions: any = { AND: [] }; // Initialize whereConditions with proper type
 
   if (searchTerm) {
     const orConditions = [];
 
     // Handle budget filter
-    if (!isNaN(searchTerm)) {
-      orConditions.push({ budget: { equals: Number(searchTerm) } });
-    }
+    // if (!isNaN(searchTerm)) {
+    //   orConditions.push({ budget: { equals: Number(searchTerm) } });
+    // }
 
     // Handle destination filter
     if (typeof searchTerm === "string" && searchTerm.trim().length > 0) {
       orConditions.push({
         destination: { contains: searchTerm, mode: "insensitive" },
+      });
+      orConditions.push({
+        startDate: { contains: searchTerm, mode: "insensitive" },
+      });
+      orConditions.push({
+        endDate: { contains: searchTerm, mode: "insensitive" },
+      });
+      orConditions.push({
+        travelType: { contains: searchTerm, mode: "insensitive" },
+      });
+      orConditions.push({
+        description: { contains: searchTerm, mode: "insensitive" },
       });
     }
 
@@ -47,10 +60,10 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
   if (filterData) {
     const andConditions = [];
 
-    // destination
-    if (filterData.destination) {
+    // Travel Type
+    if (filterData.travelType) {
       andConditions.push({
-        destination: { contains: filterData.destination, mode: "insensitive" },
+        travelType: { equals: filterData.travelType },
       });
     }
 
@@ -66,14 +79,33 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
         endDate: { equals: filterData.endDate },
       });
     }
-    if (filterData.minBudget && filterData.maxBudget) {
-      andConditions.push({
-        budget: {
-          gte: Number(filterData.minBudget),
-          lte: Number(filterData.maxBudget),
-        },
-      });
-    }
+
+    // max
+    // if (filterData.maxBudget) {
+    //   andConditions.push({
+    //     budget: {
+    //       lte: Number(filterData.maxBudget),
+    //     },
+    //   });
+    // }
+
+    // min
+    // if (filterData.minBudget) {
+    //   andConditions.push({
+    //     budget: {
+    //       gte: Number(filterData.minBudget),
+    //     },
+    //   });
+    // }
+    //  max and min
+    // if (filterData.minBudget && filterData.maxBudget) {
+    //   andConditions.push({
+    //     budget: {
+    //       gte: Number(filterData.minBudget),
+    //       lte: Number(filterData.maxBudget),
+    //     },
+    //   });
+    // }
 
     // Push conditions into AND
     if (andConditions.length > 0) {
@@ -109,7 +141,18 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
   };
 };
 
+// get single Trip
+const getSingleTripeDB = async (id: string) => {
+  const result = await prisma.trip.findUnique({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const TripServices = {
   CreateTripeDB,
   GetTripsDB,
+  getSingleTripeDB,
 };

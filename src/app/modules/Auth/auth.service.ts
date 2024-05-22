@@ -7,27 +7,11 @@ import prisma from "../../../shared/prisma";
 
 // Registration
 const RegistrationDB = async (payload: any) => {
-  const { profile, ...user } = payload;
+  const hashedPassword: string = await bcrypt.hash(payload.password, 12);
 
-  const hashedPassword: string = await bcrypt.hash(user.password, 12);
+  payload.password = hashedPassword;
 
-  user.password = hashedPassword;
-
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const userResult = await prisma.user.create({ data: user });
-
-    if (!userResult) {
-      throw new Error("something went wrong");
-    }
-
-    profile.userId = userResult.id;
-
-    await transactionClient.userProfile.create({
-      data: profile,
-    });
-
-    return userResult;
-  });
+  const result = await prisma.user.create({ data: payload });
 
   const { id, name, email, createdAt, updatedAt } = result;
 
@@ -36,12 +20,14 @@ const RegistrationDB = async (payload: any) => {
 
 // login
 const loginUserDB = async (payload: any) => {
-  const userData = await prisma.user.findUniqueOrThrow({
+  const userData = await prisma.user.findUnique({
     where: {
       email: payload.email,
     },
   });
+
   if (!userData) {
+    console.log("nei");
     throw new Error(" Unauthorized Access!");
   }
   const isCorrectPassword: boolean = await bcrypt.compare(
@@ -54,6 +40,8 @@ const loginUserDB = async (payload: any) => {
   const accessToken = jwtHelpers.generateToken(
     {
       email: userData.email,
+      id: userData.id,
+      role: userData.role,
     },
     config.jwt.jwt_secret as string,
     config.jwt.expires_in as string

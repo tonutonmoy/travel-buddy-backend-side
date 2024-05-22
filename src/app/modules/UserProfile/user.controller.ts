@@ -28,6 +28,7 @@ const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
     throw new Error("Unauthorized Access");
   }
   const result = await UserProfileServices.GetUserProfileDB(email);
+  console.log(result, "t");
 
   sendResponse(res, {
     statusCode: 200,

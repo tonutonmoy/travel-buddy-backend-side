@@ -7,9 +7,13 @@ const router = express.Router();
 
 router.post(
   "/register",
-  zodValidation(AuthValidation.UserValidation),
+  zodValidation(AuthValidation.RegisterValidation),
   AuthController.RegistrationUser
 );
-router.post("/login", AuthController.loginUser);
+router.post(
+  "/login",
+  zodValidation(AuthValidation.loginValidation),
+  AuthController.loginUser
+);
 
 export const AuthRoutes = router;
