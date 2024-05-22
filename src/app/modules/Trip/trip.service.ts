@@ -143,9 +143,20 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
 
 // get single Trip
 const getSingleTripeDB = async (id: string) => {
+  console.log("aiseee");
   const result = await prisma.trip.findUnique({
     where: {
       id,
+    },
+  });
+  return result;
+};
+// get posted Trips
+const getPostedTripeDB = async (id: string) => {
+  console.log(id, "id");
+  const result = await prisma.trip.findMany({
+    where: {
+      userId: id,
     },
   });
   return result;
@@ -155,4 +166,5 @@ export const TripServices = {
   CreateTripeDB,
   GetTripsDB,
   getSingleTripeDB,
+  getPostedTripeDB,
 };

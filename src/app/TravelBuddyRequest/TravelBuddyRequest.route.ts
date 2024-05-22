@@ -5,6 +5,11 @@ import { TravelBuddyRequestValidation } from "./TravelBuddyRequest.validation";
 
 const router = express.Router();
 
+router.get(
+  "/request",
+
+  TravelBuddyRequestController.GetTravelBuddyRequest
+);
 router.post(
   "/:tripId/request",
   zodValidation(TravelBuddyRequestValidation.RequestValidation),

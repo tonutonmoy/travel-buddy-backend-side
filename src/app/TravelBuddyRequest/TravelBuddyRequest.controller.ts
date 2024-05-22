@@ -6,14 +6,46 @@ import sendResponse from "../../shared/sendResponse";
 import { TravelBuddyRequestServices } from "./TravelBuddyRequest.service";
 import prisma from "../../shared/prisma";
 
+const GetTravelBuddyRequest = catchAsync(
+  async (req: Request, res: Response) => {
+    const token = req.headers.authorization as string;
+
+    if (!token) {
+      throw new Error("Unauthorized Access");
+    }
+
+    const { email } = jwtHelpers.verifyToken(
+      token,
+      config.jwt.jwt_secret as string
+    );
+
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+    });
+
+    if (!user) {
+      throw new Error("Unauthorized Access");
+    }
+
+    const result = await TravelBuddyRequestServices.GetTravelBuddyRequestDB(
+      user?.id
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Travel buddy request data retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 const CreateTravelBuddyRequest = catchAsync(
   async (req: Request, res: Response) => {
     const token = req.headers.authorization as string;
 
     const tripId = req?.params?.tripId;
     const body = req?.body;
-
-    console.log(body, tripId);
 
     if (!token) {
       throw new Error("Unauthorized Access");
@@ -48,4 +80,5 @@ const CreateTravelBuddyRequest = catchAsync(
 
 export const TravelBuddyRequestController = {
   CreateTravelBuddyRequest,
+  GetTravelBuddyRequest,
 };

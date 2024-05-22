@@ -1,6 +1,27 @@
 import prisma from "../../shared/prisma";
 
+const GetTravelBuddyRequestDB = async (payload: any) => {
+  console.log(payload);
+  const result = await prisma.travelBuddy.findMany({
+    where: {
+      userId: payload,
+    },
+    include: {
+      trip: {
+        select: {
+          destination: true,
+          startDate: true,
+          endDate: true,
+          travelType: true,
+          location: true,
+        },
+      },
+    },
+  });
+  return result;
+};
 const CreateTravelBuddyRequestDB = async (payload: any) => {
+  console.log(payload);
   const result = await prisma.travelBuddy.create({
     data: payload,
   });
@@ -9,4 +30,5 @@ const CreateTravelBuddyRequestDB = async (payload: any) => {
 
 export const TravelBuddyRequestServices = {
   CreateTravelBuddyRequestDB,
+  GetTravelBuddyRequestDB,
 };

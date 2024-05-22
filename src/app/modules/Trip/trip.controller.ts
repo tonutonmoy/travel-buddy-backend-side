@@ -56,6 +56,35 @@ const GetTrips = catchAsync(async (req: Request, res: Response) => {
 
 const GetSingleTrips = catchAsync(async (req: Request, res: Response) => {
   const result = await TripServices.getSingleTripeDB(req?.params?.id);
+  console.log("hello");
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Trips retrieved successfully",
+    data: result,
+  });
+});
+const GetPostedTrips = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization as string;
+
+  if (!token) {
+    throw new Error("Unauthorized Access");
+  }
+
+  const { email } = jwtHelpers.verifyToken(
+    token,
+    config.jwt.jwt_secret as string
+  );
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
+  const result = await TripServices.getPostedTripeDB(user?.id);
 
   sendResponse(res, {
     statusCode: 200,
@@ -69,4 +98,5 @@ export const TripController = {
   CreateTrip,
   GetTrips,
   GetSingleTrips,
+  GetPostedTrips,
 };

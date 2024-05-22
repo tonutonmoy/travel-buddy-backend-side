@@ -56,6 +56,11 @@ model TravelBuddy {
   id                 String     @id @default(uuid())
   userId             String     
   tripId             String
+  name               String
+  email              String
+  number             String
+  country            String
+  city               String
   status             Status     @default(PENDING)
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
