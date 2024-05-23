@@ -22,7 +22,7 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
 
   console.log(page);
-  let whereConditions: any = { AND: [] }; // Initialize whereConditions with proper type
+  let whereConditions: any = { AND: [], status: true }; // Initialize whereConditions with proper type
 
   if (searchTerm) {
     const orConditions = [];
@@ -64,6 +64,12 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
     if (filterData.travelType) {
       andConditions.push({
         travelType: { equals: filterData.travelType },
+      });
+    }
+    // destination
+    if (filterData.destination) {
+      andConditions.push({
+        destination: { contains: filterData.destination, mode: "insensitive" },
       });
     }
 
@@ -143,23 +149,52 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
 
 // get single Trip
 const getSingleTripeDB = async (id: string) => {
-  console.log("aiseee");
+  const whereCondition = {
+    id,
+    status: true,
+  };
   const result = await prisma.trip.findUnique({
-    where: {
-      id,
-    },
+    where: whereCondition,
   });
   return result;
 };
-// get posted Trips
-const getPostedTripeDB = async (id: string) => {
+// update  Trip
+const UpdateTripeDB = async (id: string, data: any) => {
   console.log(id, "id");
-  const result = await prisma.trip.findMany({
-    where: {
-      userId: id,
-    },
+  const result = await prisma.trip.update({
+    where: { id },
+    data: data,
   });
   return result;
+};
+// delete  Trip
+const DeleteTripeDB = async (id: string) => {
+  console.log(id, "id");
+
+  const data: any = {
+    status: false,
+  };
+  const result = await prisma.trip.update({
+    where: { id },
+    data: data,
+  });
+  return result;
+};
+
+// get posted Trips
+const getPostedTripeDB = async (id: string) => {
+  const whereCondition = {
+    userId: id,
+    status: true,
+  };
+  try {
+    const result = await prisma.trip.findMany({
+      where: whereCondition,
+    });
+    return result;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const TripServices = {
@@ -167,4 +202,6 @@ export const TripServices = {
   GetTripsDB,
   getSingleTripeDB,
   getPostedTripeDB,
+  UpdateTripeDB,
+  DeleteTripeDB,
 };

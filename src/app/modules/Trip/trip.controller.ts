@@ -94,9 +94,67 @@ const GetPostedTrips = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const UpdateTrip = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization as string;
+
+  if (!token) {
+    throw new Error("Unauthorized Access");
+  }
+
+  const { email } = jwtHelpers.verifyToken(
+    token,
+    config.jwt.jwt_secret as string
+  );
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
+  const result = await TripServices.UpdateTripeDB(req?.params?.id, req?.body);
+
+  sendResponse(res, {
+    statusCode: 202,
+    success: true,
+    message: "Trip  update successfully",
+    data: result,
+  });
+});
+const DeleteTrip = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization as string;
+
+  if (!token) {
+    throw new Error("Unauthorized Access");
+  }
+
+  const { email } = jwtHelpers.verifyToken(
+    token,
+    config.jwt.jwt_secret as string
+  );
+
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+  });
+
+  if (!user) {
+    throw new Error("Unauthorized Access");
+  }
+  const result = await TripServices.DeleteTripeDB(req?.params?.id);
+
+  sendResponse(res, {
+    statusCode: 203,
+    success: true,
+    message: "Trips delete successfully",
+    data: result,
+  });
+});
 export const TripController = {
   CreateTrip,
   GetTrips,
   GetSingleTrips,
   GetPostedTrips,
+  UpdateTrip,
+  DeleteTrip,
 };

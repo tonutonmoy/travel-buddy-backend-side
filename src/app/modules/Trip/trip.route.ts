@@ -14,6 +14,8 @@ router.post(
 );
 router.get("/trips", TripController.GetTrips);
 router.get("/trips/:id", TripController.GetSingleTrips);
+router.put("/trips/update/:id", TripController.UpdateTrip);
+router.delete("/trips/delete/:id", TripController.DeleteTrip);
 router.get("/tripsPosted", TripController.GetPostedTrips);
 
 export const TripsRoutes = router;
