@@ -15,5 +15,10 @@ router.post(
   zodValidation(AuthValidation.loginValidation),
   AuthController.loginUser
 );
+router.put(
+  "/changePassword",
+  zodValidation(AuthValidation.changePassword),
+  AuthController.ChangePassword
+);
 
 export const AuthRoutes = router;

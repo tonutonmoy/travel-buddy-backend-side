@@ -55,7 +55,19 @@ const loginUserDB = async (payload: any) => {
   };
 };
 
+const ChangePasswordDB = async (id: string, newPassword: string) => {
+  console.log(id, "id");
+  const hashedPassword: string = await bcrypt.hash(newPassword, 12);
+
+  const result = await prisma.user.update({
+    where: { id },
+    data: { password: hashedPassword },
+  });
+  return result;
+};
+
 export const AuthServices = {
   RegistrationDB,
   loginUserDB,
+  ChangePasswordDB,
 };

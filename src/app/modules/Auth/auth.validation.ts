@@ -10,7 +10,13 @@ const loginValidation = z.object({
 
   password: z.string(),
 });
+const changePassword = z.object({
+  oldPassword: z.string(),
+
+  newPassword: z.string(),
+});
 export const AuthValidation = {
   RegisterValidation,
   loginValidation,
+  changePassword,
 };

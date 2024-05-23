@@ -149,7 +149,7 @@ const GetTripsDB = async (searchTerm: any, params: any, options: any) => {
 
 // get single Trip
 const getSingleTripeDB = async (id: string) => {
-  const whereCondition = {
+  const whereCondition: any = {
     id,
     status: true,
   };
@@ -183,7 +183,7 @@ const DeleteTripeDB = async (id: string) => {
 
 // get posted Trips
 const getPostedTripeDB = async (id: string) => {
-  const whereCondition = {
+  const whereCondition: any = {
     userId: id,
     status: true,
   };
