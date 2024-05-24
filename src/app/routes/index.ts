@@ -4,6 +4,7 @@ import { TripsRoutes } from "../modules/Trip/trip.route";
 import { UserProfileRoutes } from "../modules/UserProfile/user.route";
 import { TravelBuddyRoutes } from "../TravelBuddy/travelBuddy.route";
 import { TravelBuddyRequestRoutes } from "../TravelBuddyRequest/TravelBuddyRequest.route";
+import { UsersRoutes } from "../modules/User/users.route";
 const router = express.Router();
 
 const moduleRoutes = [
@@ -14,6 +15,10 @@ const moduleRoutes = [
   {
     path: "/api",
     route: TripsRoutes,
+  },
+  {
+    path: "/api/users",
+    route: UsersRoutes,
   },
   {
     path: "/api",

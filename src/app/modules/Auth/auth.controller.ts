@@ -60,7 +60,7 @@ const ChangePassword = catchAsync(async (req: Request, res: Response) => {
   const match = await bcrypt.compare(oldPassword, password);
 
   if (!match) {
-    throw new Error("Unauthorized Access");
+    throw new Error("wrong password");
   }
 
   console.log(match);

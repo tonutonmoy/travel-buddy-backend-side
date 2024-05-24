@@ -92,7 +92,7 @@ Admin
 }
 enum UserStatus {
  Activate
- deactivate 
+ Deactivate 
  
 }
 enum TripStatus {

@@ -5,10 +5,11 @@ import sendResponse from "../../../shared/sendResponse";
 
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import config from "../../../config";
-import { UserProfileServices } from "./user.service";
-import prisma from "../../../shared/prisma";
 
-const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
+import prisma from "../../../shared/prisma";
+import { UsersServices } from "./users.service";
+
+const GeAllUsers = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
 
   if (!token) {
@@ -27,19 +28,21 @@ const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
-  const result = await UserProfileServices.GetUserProfileDB(email);
-  console.log(result, "t");
+
+  const result = await UsersServices.GetAllUsersDB();
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "User profile retrieved successfully",
+    message: "Users retrieved successfully",
     data: result,
   });
 });
 
-const UpdateUserProfile = catchAsync(async (req: Request, res: Response) => {
+const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
+
+  console.log("aisi");
 
   if (!token) {
     throw new Error("Unauthorized Access");
@@ -57,20 +60,20 @@ const UpdateUserProfile = catchAsync(async (req: Request, res: Response) => {
     throw new Error("Unauthorized Access");
   }
 
-  const result = await UserProfileServices.UpdateUserProfileDB(
-    email,
+  const result = await UsersServices.UpdateUserStatusDB(
+    req?.params?.id,
     req?.body
   );
 
   sendResponse(res, {
-    statusCode: 200,
+    statusCode: 203,
     success: true,
-    message: "User profile updated successfully",
+    message: "User Status updated successfully",
     data: result,
   });
 });
 
-export const UserProfileController = {
-  GetUserProfile,
-  UpdateUserProfile,
+export const UsersController = {
+  UpdateUserStatus,
+  GeAllUsers,
 };
