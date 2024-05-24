@@ -9,7 +9,7 @@ import config from "../../../config";
 import prisma from "../../../shared/prisma";
 import { UsersServices } from "./users.service";
 
-const GeAllUsers = catchAsync(async (req: Request, res: Response) => {
+const GeTAllUsers = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
 
   if (!token) {
@@ -27,6 +27,11 @@ const GeAllUsers = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new Error("Unauthorized Access");
+  }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
   }
 
   const result = await UsersServices.GetAllUsersDB();
@@ -42,8 +47,6 @@ const GeAllUsers = catchAsync(async (req: Request, res: Response) => {
 const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization as string;
 
-  console.log("aisi");
-
   if (!token) {
     throw new Error("Unauthorized Access");
   }
@@ -58,6 +61,11 @@ const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new Error("Unauthorized Access");
+  }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
   }
 
   const result = await UsersServices.UpdateUserStatusDB(
@@ -75,5 +83,5 @@ const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
 
 export const UsersController = {
   UpdateUserStatus,
-  GeAllUsers,
+  GeTAllUsers,
 };

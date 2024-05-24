@@ -19,7 +19,7 @@ const RegistrationUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthServices.loginUserDB(req.body);
+  const result = await AuthServices.loginUserDB(req?.body);
 
   sendResponse(res, {
     statusCode: 200,
@@ -55,7 +55,7 @@ const ChangePassword = catchAsync(async (req: Request, res: Response) => {
   const { userStatus, password } = user;
 
   if (userStatus !== "Activate") {
-    throw new Error("Unauthorized Access");
+    throw new Error("Your id is blocked");
   }
   const match = await bcrypt.compare(oldPassword, password);
 

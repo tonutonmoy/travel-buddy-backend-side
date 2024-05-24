@@ -6,7 +6,7 @@ const router = express.Router();
 router.get(
   "/",
 
-  UsersController.GeAllUsers
+  UsersController.GeTAllUsers
 );
 router.put("/:id", UsersController.UpdateUserStatus);
 

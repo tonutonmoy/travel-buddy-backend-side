@@ -26,6 +26,11 @@ const GetTravelBuddyRequest = catchAsync(
     if (!user) {
       throw new Error("Unauthorized Access");
     }
+    const { userStatus } = user;
+
+    if (userStatus !== "Activate") {
+      throw new Error("Your id is blocked");
+    }
 
     const result = await TravelBuddyRequestServices.GetTravelBuddyRequestDB(
       user?.id
@@ -62,6 +67,11 @@ const CreateTravelBuddyRequest = catchAsync(
 
     if (!user) {
       throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+
+    if (userStatus !== "Activate") {
+      throw new Error("Your id is blocked");
     }
     body.tripId = tripId;
 

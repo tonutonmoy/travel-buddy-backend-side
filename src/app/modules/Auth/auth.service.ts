@@ -30,6 +30,11 @@ const loginUserDB = async (payload: any) => {
     console.log("nei");
     throw new Error(" Unauthorized Access!");
   }
+  const { userStatus, password } = userData;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
   const isCorrectPassword: boolean = await bcrypt.compare(
     payload.password,
     userData.password

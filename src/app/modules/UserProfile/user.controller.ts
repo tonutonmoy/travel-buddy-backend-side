@@ -27,8 +27,12 @@ const GetUserProfile = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
   const result = await UserProfileServices.GetUserProfileDB(email);
-  console.log(result, "t");
 
   sendResponse(res, {
     statusCode: 200,
@@ -56,7 +60,11 @@ const UpdateUserProfile = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
+  const { userStatus } = user;
 
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
   const result = await UserProfileServices.UpdateUserProfileDB(
     email,
     req?.body

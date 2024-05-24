@@ -28,7 +28,11 @@ const CreateTrip = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
+  const { userStatus, password } = user;
 
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
   const result = await TripServices.CreateTripeDB(email, req.body);
 
   sendResponse(res, {
@@ -84,6 +88,12 @@ const GetPostedTrips = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
+
   const result = await TripServices.getPostedTripeDB(user?.id);
 
   sendResponse(res, {
@@ -113,6 +123,11 @@ const UpdateTrip = catchAsync(async (req: Request, res: Response) => {
   if (!user) {
     throw new Error("Unauthorized Access");
   }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
+  }
   const result = await TripServices.UpdateTripeDB(req?.params?.id, req?.body);
 
   sendResponse(res, {
@@ -140,6 +155,11 @@ const DeleteTrip = catchAsync(async (req: Request, res: Response) => {
 
   if (!user) {
     throw new Error("Unauthorized Access");
+  }
+  const { userStatus } = user;
+
+  if (userStatus !== "Activate") {
+    throw new Error("Your id is blocked");
   }
   const result = await TripServices.DeleteTripeDB(req?.params?.id);
 
