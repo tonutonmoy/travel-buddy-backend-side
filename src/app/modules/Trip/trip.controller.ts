@@ -99,7 +99,7 @@ const GetPostedTrips = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Trips retrieved successfully",
+    message: "Posted Trips retrieved successfully",
     data: result,
   });
 });

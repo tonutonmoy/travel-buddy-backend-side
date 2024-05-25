@@ -41,17 +41,30 @@ const CreateTripeDB = (email, payload) => __awaiter(void 0, void 0, void 0, func
 const GetTripsDB = (searchTerm, params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const filterData = __rest(params, []);
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
-    let whereConditions = { AND: [] }; // Initialize whereConditions with proper type
+    console.log(page);
+    let whereConditions = { AND: [], status: true }; // Initialize whereConditions with proper type
     if (searchTerm) {
         const orConditions = [];
         // Handle budget filter
-        if (!isNaN(searchTerm)) {
-            orConditions.push({ budget: { equals: Number(searchTerm) } });
-        }
+        // if (!isNaN(searchTerm)) {
+        //   orConditions.push({ budget: { equals: Number(searchTerm) } });
+        // }
         // Handle destination filter
         if (typeof searchTerm === "string" && searchTerm.trim().length > 0) {
             orConditions.push({
                 destination: { contains: searchTerm, mode: "insensitive" },
+            });
+            orConditions.push({
+                startDate: { contains: searchTerm, mode: "insensitive" },
+            });
+            orConditions.push({
+                endDate: { contains: searchTerm, mode: "insensitive" },
+            });
+            orConditions.push({
+                travelType: { contains: searchTerm, mode: "insensitive" },
+            });
+            orConditions.push({
+                description: { contains: searchTerm, mode: "insensitive" },
             });
         }
         // Push conditions into AND
@@ -61,6 +74,12 @@ const GetTripsDB = (searchTerm, params, options) => __awaiter(void 0, void 0, vo
     }
     if (filterData) {
         const andConditions = [];
+        // Travel Type
+        if (filterData.travelType) {
+            andConditions.push({
+                travelType: { equals: filterData.travelType },
+            });
+        }
         // destination
         if (filterData.destination) {
             andConditions.push({
@@ -79,14 +98,31 @@ const GetTripsDB = (searchTerm, params, options) => __awaiter(void 0, void 0, vo
                 endDate: { equals: filterData.endDate },
             });
         }
-        if (filterData.minBudget && filterData.maxBudget) {
-            andConditions.push({
-                budget: {
-                    gte: Number(filterData.minBudget),
-                    lte: Number(filterData.maxBudget),
-                },
-            });
-        }
+        // max
+        // if (filterData.maxBudget) {
+        //   andConditions.push({
+        //     budget: {
+        //       lte: Number(filterData.maxBudget),
+        //     },
+        //   });
+        // }
+        // min
+        // if (filterData.minBudget) {
+        //   andConditions.push({
+        //     budget: {
+        //       gte: Number(filterData.minBudget),
+        //     },
+        //   });
+        // }
+        //  max and min
+        // if (filterData.minBudget && filterData.maxBudget) {
+        //   andConditions.push({
+        //     budget: {
+        //       gte: Number(filterData.minBudget),
+        //       lte: Number(filterData.maxBudget),
+        //     },
+        //   });
+        // }
         // Push conditions into AND
         if (andConditions.length > 0) {
             whereConditions.AND.push(...andConditions);
@@ -116,7 +152,59 @@ const GetTripsDB = (searchTerm, params, options) => __awaiter(void 0, void 0, vo
         data: result,
     };
 });
+// get single Trip
+const getSingleTripeDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const whereCondition = {
+        id,
+        status: true,
+    };
+    const result = yield prisma_1.default.trip.findUnique({
+        where: whereCondition,
+    });
+    return result;
+});
+// update  Trip
+const UpdateTripeDB = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(id, "id");
+    const result = yield prisma_1.default.trip.update({
+        where: { id },
+        data: data,
+    });
+    return result;
+});
+// delete  Trip
+const DeleteTripeDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(id, "id");
+    const data = {
+        status: false,
+    };
+    const result = yield prisma_1.default.trip.update({
+        where: { id },
+        data: data,
+    });
+    return result;
+});
+// get posted Trips
+const getPostedTripeDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const whereCondition = {
+        userId: id,
+        status: true,
+    };
+    try {
+        const result = yield prisma_1.default.trip.findMany({
+            where: whereCondition,
+        });
+        return result;
+    }
+    catch (error) {
+        return error;
+    }
+});
 exports.TripServices = {
     CreateTripeDB,
     GetTripsDB,
+    getSingleTripeDB,
+    getPostedTripeDB,
+    UpdateTripeDB,
+    DeleteTripeDB,
 };

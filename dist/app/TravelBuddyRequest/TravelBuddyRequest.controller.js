@@ -19,6 +19,30 @@ const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
 const TravelBuddyRequest_service_1 = require("./TravelBuddyRequest.service");
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const GetTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization;
+    if (!token) {
+        throw new Error("Unauthorized Access");
+    }
+    const { email } = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.jwt_secret);
+    const user = yield prisma_1.default.user.findUnique({
+        where: { email: email },
+    });
+    if (!user) {
+        throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
+    const result = yield TravelBuddyRequest_service_1.TravelBuddyRequestServices.GetTravelBuddyRequestDB(user === null || user === void 0 ? void 0 : user.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Travel buddy request data retrieved successfully",
+        data: result,
+    });
+}));
 const CreateTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = req.headers.authorization;
@@ -34,6 +58,10 @@ const CreateTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __await
     if (!user) {
         throw new Error("Unauthorized Access");
     }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
     body.tripId = tripId;
     const result = yield TravelBuddyRequest_service_1.TravelBuddyRequestServices.CreateTravelBuddyRequestDB(body);
     (0, sendResponse_1.default)(res, {
@@ -45,4 +73,5 @@ const CreateTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __await
 }));
 exports.TravelBuddyRequestController = {
     CreateTravelBuddyRequest,
+    GetTravelBuddyRequest,
 };

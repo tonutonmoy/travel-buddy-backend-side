@@ -12,14 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserProfileServices = void 0;
+exports.UsersServices = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-// Get Profile
-const GetUserProfileDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            email,
-        },
+// Get All Users
+const GetAllUsersDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.findMany({
         select: {
             id: true,
             name: true,
@@ -27,6 +24,7 @@ const GetUserProfileDB = (email) => __awaiter(void 0, void 0, void 0, function* 
             photo: true,
             age: true,
             bio: true,
+            userStatus: true,
             role: true,
             createdAt: true,
             updatedAt: true,
@@ -34,10 +32,11 @@ const GetUserProfileDB = (email) => __awaiter(void 0, void 0, void 0, function* 
     });
     return result;
 });
-const UpdateUserProfileDB = (email, payload) => __awaiter(void 0, void 0, void 0, function* () {
+//  Update User Status
+const UpdateUserStatusDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.user.update({
         where: {
-            email: email,
+            id: id,
         },
         data: payload,
         select: {
@@ -47,13 +46,15 @@ const UpdateUserProfileDB = (email, payload) => __awaiter(void 0, void 0, void 0
             photo: true,
             age: true,
             bio: true,
+            userStatus: true,
+            role: true,
             createdAt: true,
             updatedAt: true,
         },
     });
     return result;
 });
-exports.UserProfileServices = {
-    GetUserProfileDB,
-    UpdateUserProfileDB,
+exports.UsersServices = {
+    UpdateUserStatusDB,
+    GetAllUsersDB,
 };

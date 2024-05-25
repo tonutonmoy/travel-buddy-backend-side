@@ -33,6 +33,10 @@ const GetTravelBuddies = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     if (!user) {
         throw new Error("Unauthorized Access");
     }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
     const result = yield travelBuddy_service_1.TravelBuddyServices.GetTravelBuddiesDB(tripId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
@@ -54,6 +58,10 @@ const UpdateTravelBuddy = (0, catchAsync_1.default)((req, res) => __awaiter(void
     });
     if (!user) {
         throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
     }
     const result = yield travelBuddy_service_1.TravelBuddyServices.UpdateTravelBuddiesDB(id, req === null || req === void 0 ? void 0 : req.body);
     (0, sendResponse_1.default)(res, {

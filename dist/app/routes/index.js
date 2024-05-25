@@ -9,6 +9,7 @@ const trip_route_1 = require("../modules/Trip/trip.route");
 const user_route_1 = require("../modules/UserProfile/user.route");
 const travelBuddy_route_1 = require("../TravelBuddy/travelBuddy.route");
 const TravelBuddyRequest_route_1 = require("../TravelBuddyRequest/TravelBuddyRequest.route");
+const users_route_1 = require("../modules/User/users.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -18,6 +19,10 @@ const moduleRoutes = [
     {
         path: "/api",
         route: trip_route_1.TripsRoutes,
+    },
+    {
+        path: "/api/users",
+        route: users_route_1.UsersRoutes,
     },
     {
         path: "/api",

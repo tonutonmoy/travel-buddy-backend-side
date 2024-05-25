@@ -13,6 +13,7 @@ const GetUserProfileDB = async (email: string) => {
       photo: true,
       age: true,
       bio: true,
+      role: true,
       createdAt: true,
       updatedAt: true,
     },

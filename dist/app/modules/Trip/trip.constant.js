@@ -8,4 +8,5 @@ exports.userFilterableFields = [
     "endDate",
     "minBudget",
     "maxBudget",
+    "travelType",
 ];

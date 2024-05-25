@@ -14,7 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TravelBuddyRequestServices = void 0;
 const prisma_1 = __importDefault(require("../../shared/prisma"));
+const GetTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(payload);
+    const result = yield prisma_1.default.travelBuddy.findMany({
+        where: {
+            userId: payload,
+        },
+        include: {
+            trip: {
+                select: {
+                    destination: true,
+                    startDate: true,
+                    endDate: true,
+                    travelType: true,
+                    location: true,
+                },
+            },
+        },
+    });
+    return result;
+});
 const CreateTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(payload);
     const result = yield prisma_1.default.travelBuddy.create({
         data: payload,
     });
@@ -22,4 +43,5 @@ const CreateTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0
 });
 exports.TravelBuddyRequestServices = {
     CreateTravelBuddyRequestDB,
+    GetTravelBuddyRequestDB,
 };
