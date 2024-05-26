@@ -16,6 +16,11 @@ router.post(
   TripController.CreateTrip
 );
 router.get("/trips", TripController.GetTrips);
+router.get(
+  "/tripsForAdmin",
+  auth(USER_ROLE.admin),
+  TripController.getAllTripeForAdmin
+);
 router.get("/trips/:id", TripController.GetSingleTrips);
 router.put(
   "/trips/update/:id",

@@ -196,6 +196,20 @@ const getPostedTripeDB = async (id: string) => {
     return error;
   }
 };
+// get All Tripe For Admin
+const getAllTripeForAdminDB = async () => {
+  const whereCondition: any = {
+    status: true,
+  };
+  try {
+    const result = await prisma.trip.findMany({
+      where: whereCondition,
+    });
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
 
 export const TripServices = {
   CreateTripeDB,
@@ -204,4 +218,5 @@ export const TripServices = {
   getPostedTripeDB,
   UpdateTripeDB,
   DeleteTripeDB,
+  getAllTripeForAdminDB,
 };

@@ -200,6 +200,21 @@ const getPostedTripeDB = (id) => __awaiter(void 0, void 0, void 0, function* () 
         return error;
     }
 });
+// get All Tripe For Admin
+const getAllTripeForAdminDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const whereCondition = {
+        status: true,
+    };
+    try {
+        const result = yield prisma_1.default.trip.findMany({
+            where: whereCondition,
+        });
+        return result;
+    }
+    catch (error) {
+        return error;
+    }
+});
 exports.TripServices = {
     CreateTripeDB,
     GetTripsDB,
@@ -207,4 +222,5 @@ exports.TripServices = {
     getPostedTripeDB,
     UpdateTripeDB,
     DeleteTripeDB,
+    getAllTripeForAdminDB,
 };

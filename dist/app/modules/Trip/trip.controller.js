@@ -143,6 +143,30 @@ const DeleteTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getAllTripeForAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization;
+    if (!token) {
+        throw new Error("Unauthorized Access");
+    }
+    const { email } = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.jwt_secret);
+    const user = yield prisma_1.default.user.findUnique({
+        where: { email: email },
+    });
+    if (!user) {
+        throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
+    const result = yield trip_service_1.TripServices.getAllTripeForAdminDB();
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Trips retrieved  successfully",
+        data: result,
+    });
+}));
 exports.TripController = {
     CreateTrip,
     GetTrips,
@@ -150,4 +174,5 @@ exports.TripController = {
     GetPostedTrips,
     UpdateTrip,
     DeleteTrip,
+    getAllTripeForAdmin,
 };
