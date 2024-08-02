@@ -13,6 +13,18 @@ router.get(
 
   TravelBuddyRequestController.GetTravelBuddyRequest
 );
+router.get(
+  "/gotRequest",
+  auth(USER_ROLE.user),
+
+  TravelBuddyRequestController.GetGotTravelBuddyRequest
+);
+router.put(
+  "/updateGotRequest/:id",
+  auth(USER_ROLE.user),
+
+  TravelBuddyRequestController.UpdateGotTravelBuddyRequest
+);
 router.post(
   "/:tripId/request",
   auth(USER_ROLE.user),

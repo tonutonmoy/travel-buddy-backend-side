@@ -20,9 +20,44 @@ const GetTravelBuddyRequestDB = async (payload: any) => {
   });
   return result;
 };
+const GetGotTravelBuddyRequestDB = async (payload: any) => {
+  console.log(payload);
+  const filteredTrips = await prisma.user.findFirst({
+    where: {
+      id: payload,
+    },
+    include: {
+      trip: {
+        include: {
+          trip: true,
+          
+          
+        },
+      },
+    },
+  });
+  const result2 = filteredTrips?.trip.filter((t:any) => t?.trip?.length > 0);
+  const result: any=[];
+  result2?.forEach(a=>{
+
+    a?.trip?.forEach(a=> result.push(a))
+  })
+  return result;
+};
 const CreateTravelBuddyRequestDB = async (payload: any) => {
   console.log(payload);
   const result = await prisma.travelBuddy.create({
+    data: payload,
+  });
+  return result;
+};
+const UpdateGotTravelBuddyRequestDB = async (payload: any,id:string) => {
+  console.log(payload);
+  const result = await prisma.travelBuddy.update({
+    where:{
+      id: id
+    }
+    ,
     data: payload,
   });
   return result;
@@ -31,4 +66,6 @@ const CreateTravelBuddyRequestDB = async (payload: any) => {
 export const TravelBuddyRequestServices = {
   CreateTravelBuddyRequestDB,
   GetTravelBuddyRequestDB,
+  GetGotTravelBuddyRequestDB,
+  UpdateGotTravelBuddyRequestDB
 };

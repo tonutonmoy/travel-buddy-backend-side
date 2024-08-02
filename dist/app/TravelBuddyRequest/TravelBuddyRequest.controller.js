@@ -43,6 +43,30 @@ const GetTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
         data: result,
     });
 }));
+const GetGotTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers.authorization;
+    if (!token) {
+        throw new Error("Unauthorized Access");
+    }
+    const { email } = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.jwt_secret);
+    const user = yield prisma_1.default.user.findUnique({
+        where: { email: email },
+    });
+    if (!user) {
+        throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
+    const result = yield TravelBuddyRequest_service_1.TravelBuddyRequestServices.GetGotTravelBuddyRequestDB(user === null || user === void 0 ? void 0 : user.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Travel buddy request data retrieved successfully",
+        data: result,
+    });
+}));
 const CreateTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = req.headers.authorization;
@@ -71,7 +95,37 @@ const CreateTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __await
         data: result,
     });
 }));
+const UpdateGotTravelBuddyRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    const token = req.headers.authorization;
+    const id = (_b = req === null || req === void 0 ? void 0 : req.params) === null || _b === void 0 ? void 0 : _b.id;
+    const body = req === null || req === void 0 ? void 0 : req.body;
+    if (!token) {
+        throw new Error("Unauthorized Access");
+    }
+    const { email } = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.jwt_secret);
+    const user = yield prisma_1.default.user.findUnique({
+        where: { email: email },
+    });
+    if (!user) {
+        throw new Error("Unauthorized Access");
+    }
+    const { userStatus } = user;
+    if (userStatus !== "Activate") {
+        throw new Error("Your id is blocked");
+    }
+    console.log(id, body, 'hello');
+    const result = yield TravelBuddyRequest_service_1.TravelBuddyRequestServices.UpdateGotTravelBuddyRequestDB(body, id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: " Update Got Travel buddy request  successfully",
+        data: result,
+    });
+}));
 exports.TravelBuddyRequestController = {
     CreateTravelBuddyRequest,
     GetTravelBuddyRequest,
+    GetGotTravelBuddyRequest,
+    UpdateGotTravelBuddyRequest
 };

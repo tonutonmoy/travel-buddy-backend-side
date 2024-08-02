@@ -34,6 +34,28 @@ const GetTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0, f
     });
     return result;
 });
+const GetGotTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(payload);
+    const filteredTrips = yield prisma_1.default.user.findFirst({
+        where: {
+            id: payload,
+        },
+        include: {
+            trip: {
+                include: {
+                    trip: true,
+                },
+            },
+        },
+    });
+    const result2 = filteredTrips === null || filteredTrips === void 0 ? void 0 : filteredTrips.trip.filter((t) => { var _a; return ((_a = t === null || t === void 0 ? void 0 : t.trip) === null || _a === void 0 ? void 0 : _a.length) > 0; });
+    const result = [];
+    result2 === null || result2 === void 0 ? void 0 : result2.forEach(a => {
+        var _a;
+        (_a = a === null || a === void 0 ? void 0 : a.trip) === null || _a === void 0 ? void 0 : _a.forEach(a => result.push(a));
+    });
+    return result;
+});
 const CreateTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(payload);
     const result = yield prisma_1.default.travelBuddy.create({
@@ -41,7 +63,19 @@ const CreateTravelBuddyRequestDB = (payload) => __awaiter(void 0, void 0, void 0
     });
     return result;
 });
+const UpdateGotTravelBuddyRequestDB = (payload, id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(payload);
+    const result = yield prisma_1.default.travelBuddy.update({
+        where: {
+            id: id
+        },
+        data: payload,
+    });
+    return result;
+});
 exports.TravelBuddyRequestServices = {
     CreateTravelBuddyRequestDB,
     GetTravelBuddyRequestDB,
+    GetGotTravelBuddyRequestDB,
+    UpdateGotTravelBuddyRequestDB
 };
